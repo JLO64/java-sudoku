@@ -9,7 +9,7 @@ public class java_sudoku
   public static void main(String[] args)
   {
     System.out.println("Here's a board!");
-    board_methods.boardZero(gameboard);
+    //gameboard = board_methods.boardZero(gameboard);
     
     board_methods.generateBoard(gameboard);
     System.out.println();
@@ -52,32 +52,50 @@ class board_methods
   }
   public static int [][] generateBoard(int [][] board)
   {
-    for(int nineNum = 1; nineNum <= 9; nineNum++)
-    {
-      board = generateSquares(nineNum, board);
-    }
-    return board;
+		int bombsDetonated = 0;
+		boolean goodBoard = false;
+		while (goodBoard == false)
+		{
+			boolean bombDetonated = false;
+			boardZero(board);
+			for(int nineNum = 1; nineNum <= 9; nineNum++)
+    	{
+    		for(int i = 0; i < 9; i+=3) // increments in the y direction
+   			{
+     			for(int j = 0; j < 9; j+=3) // increments in the x direction
+     			{
+       	 		boolean validPos = false;
+				 		int numStuck = 0;
+				 		while( validPos == false && bombDetonated == false)
+				 		{
+          		int xPos = (int) (Math.random() * 3 );
+          		int yPos = (int) (Math.random() * 3 );
+          		if(board[yPos+i][xPos+j] == 0 && checkPos(nineNum, board, xPos + j, yPos +i))
+          		{
+            		board[yPos+i][xPos+j] = nineNum;
+            		validPos = true;
+          		}
+          		numStuck++;
+          		if(numStuck >= 999)
+          		{
+								bombDetonated = true;
+								bombsDetonated++;
+          		}
+        		}   
+					}
+    		}
+			}
+			if(bombDetonated == false)
+			{
+				goodBoard = true;
+			}
+		}
+		System.out.println(bombsDetonated);
+		return board;
   }
   public static int [][] generateSquares(int nineNum, int [][] board)
   {
-    for(int i = 0; i < 9; i+=3)
-    {
-      for(int j = 0; j < 9; j+=3)
-      {
-        boolean validPos = false;
-        while( validPos == false )
-        {
-          int xPos = (int) (Math.random() * 3 );
-          int yPos = (int) (Math.random() * 3 );
-          if(board[yPos+i][xPos+j] == 0 )
-          {
-            board[yPos+i][xPos+j] = nineNum;
-            validPos = true;
-            boardPrint(board);
-          }
-        }   
-      }
-    }
+    
     return board;
   }
   public static boolean checkPos(int nineNum, int [][] board, int xPos, int yPos)

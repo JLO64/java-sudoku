@@ -7,22 +7,69 @@ public class java_sudoku
 {
 	private static int [][] answerBoard = new int [9][9];
 	private static int [][] questionBoard = new int [9][9];
+	private static int emptySpaces;
+
   public static void main(String[] args)
   {
 		boolean wantsToPlay = true;
+		Scanner input = new Scanner(System.in);
 		while(wantsToPlay == true)
 		{
-			boolean hasWon = false;
+			boolean validEmptySpaces = false;
+			while(validEmptySpaces == false)
+			{
+				System.out.println("How many empty spaces do you want on the board?");
+				System.out.print("Please enter a value between 1-80: ");
+				emptySpaces = input.nextInt();
+				if(emptySpaces > 0 && emptySpaces < 81)
+				{
+					validEmptySpaces = true;
+				}
+				else
+				{
+					System.out.print("	Please enter a value between 1-80");
+				}
+			}			
+
 			System.out.println("Here's a board!");    
 			board_methods.generateAnswerBoard(answerBoard);
 			board_methods.generateCopyBoard(answerBoard, questionBoard);	//copies contents of answerBoard to questionBoard
-			board_methods.generateQuestionBoard(questionBoard);
+			board_methods.generateQuestionBoard(questionBoard, emptySpaces);
+			boolean hasWon = false;
 			while(hasWon == false)
 			{
 				board_methods.boardPrint(questionBoard);
 				sudoku_methods.changeValuePos(questionBoard);
+				if(sudoku_methods.checkHasWon(questionBoard) == true)
+				{
+					hasWon = true;
+					System.out.println("You got Sudoku!\nHere's the CPU's solution:");
+					board_methods.boardPrint(answerBoard);
+				}
 			}
-			board_methods.boardPrint(answerBoard);
+
+			boolean validYN = false;
+			while(validYN == false)
+			{
+				System.out.print("Do you want to play again: ");
+				String yesNo = input.nextLine();
+				{
+					if(yesNo.equals("yes") || yesNo.equals("Yes"))
+					{
+						validYN = true;
+						wantsToPlay = true;
+					}
+					if(yesNo.equals("no") || yesNo.equals("No"))
+					{
+						validYN = true;
+						wantsToPlay = false;
+					}
+					else
+					{
+						System.out.print("	Please enter in either \"yes\" or \"no\"");
+					}
+				}
+			}
 		}
   }
 }
@@ -104,10 +151,9 @@ class board_methods
 		System.out.println("Boards Generated: " + bombsDetonated);
 		return board;
 	}
-	public static int [][] generateQuestionBoard(int [][] board)
+	public static int [][] generateQuestionBoard(int [][] board, int numToClear)
   {
-		int numToClear = (int) (Math.random() * 30 );
-		for(int i = 0; i < numToClear + 41; i++)
+		for(int i = 0; i < numToClear; i++)
 		{
 			int xPos = (int) (Math.random() * 9 );
 			int yPos = (int) (Math.random() * 9 );
@@ -222,4 +268,19 @@ class sudoku_methods
 		board[yPos][xPos] = squareValue;
 		return board;
 	}
+	public static boolean checkHasWon(int [][] board)
+	{
+		for(int i = 0; i < board.length; i++)	//increments in y
+		{
+			for(int j = 0; j < board[0].length; j++)	//increments in x
+			{
+				if(board[j][i] == 0)
+				{
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
 }

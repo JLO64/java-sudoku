@@ -1,6 +1,5 @@
 //Made by Julian Lopez
 
-import java.io.*;
 import java.util.*;
 
 public class java_sudoku
@@ -49,25 +48,24 @@ public class java_sudoku
 			}
 
 			boolean validYN = false;
+			String yesNo = "";
 			while(validYN == false)
 			{
 				System.out.print("Do you want to play again: ");
-				String yesNo = input.nextLine();
+				yesNo = input.next();
+				if(yesNo.equals("yes") || yesNo.equals("Yes"))
 				{
-					if(yesNo.equals("yes") || yesNo.equals("Yes"))
-					{
-						validYN = true;
-						wantsToPlay = true;
-					}
-					if(yesNo.equals("no") || yesNo.equals("No"))
-					{
-						validYN = true;
-						wantsToPlay = false;
-					}
-					else
-					{
-						System.out.print("	Please enter in either \"yes\" or \"no\"");
-					}
+					validYN = true;
+					wantsToPlay = true;
+				}
+				if(yesNo.equals("no") || yesNo.equals("No"))
+				{
+					validYN = true;
+					wantsToPlay = false;
+				}
+				else
+				{
+					System.out.println("	Please enter in either \"yes\" or \"no\"");
 				}
 			}
 		}
@@ -246,7 +244,7 @@ class sudoku_methods
 		possibleList.add(0);
 		for(int i = 1; i < board.length; i++)
 		{
-			if( board_methods.checkLinePos(i, board, xPos, yPos) == true && board_methods.checkSquarePos(i, board, xPos, yPos))
+			if( board_methods.checkLinePos(i, board, yPos, xPos) == true && board_methods.checkSquarePos(i, board, yPos, xPos))
 			{
 				possibleList.add(i);
 			}
@@ -265,7 +263,7 @@ class sudoku_methods
 			squareValueValid = true;
 		}
 		
-		board[yPos][xPos] = squareValue;
+		board[xPos][yPos] = squareValue;
 		return board;
 	}
 	public static boolean checkHasWon(int [][] board)

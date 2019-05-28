@@ -5,15 +5,25 @@ import java.util.*;
 
 public class java_sudoku
 {
-  private static int [][] gameboard = new int [9][9];
+	private static int [][] answerBoard = new int [9][9];
+	private static int [][] questionBoard = new int [9][9];
   public static void main(String[] args)
   {
-    System.out.println("Here's a board!");
-    //gameboard = board_methods.boardZero(gameboard);
-    
-    board_methods.generateBoard(gameboard);
-    System.out.println();
-    board_methods.boardPrint(gameboard);
+		boolean wantsToPlay = true;
+		while(wantsToPlay == true)
+		{
+			boolean hasWon = false;
+			System.out.println("Here's a board!");    
+			board_methods.generateAnswerBoard(answerBoard);
+			board_methods.generateCopyBoard(answerBoard, questionBoard);	//copies contents of answerBoard to questionBoard
+			board_methods.generateQuestionBoard(questionBoard);
+			while(hasWon == false)
+			{
+				board_methods.boardPrint(questionBoard);
+				sudoku_methods.changeValuePos(questionBoard);
+			}
+			board_methods.boardPrint(answerBoard);
+		}
   }
 }
 
@@ -37,7 +47,8 @@ class board_methods
       {
         System.out.print("-------------\n");
       }
-    }
+		}
+		System.out.println();
   }
   public static int [][] boardZero(int [][] board)
   {
@@ -50,7 +61,7 @@ class board_methods
     }
     return board;
   }
-  public static int [][] generateBoard(int [][] board)
+  public static int [][] generateAnswerBoard(int [][] board)
   {
 		int bombsDetonated = 0;
 		boolean goodBoard = false;
@@ -70,7 +81,7 @@ class board_methods
 				 		{
           		int xPos = (int) (Math.random() * 3 );
           		int yPos = (int) (Math.random() * 3 );
-          		if(board[yPos+i][xPos+j] == 0 && checkPos(nineNum, board, xPos + j, yPos +i))
+          		if(board[yPos+i][xPos+j] == 0 && checkLinePos(nineNum, board, xPos + j, yPos +i))
           		{
             		board[yPos+i][xPos+j] = nineNum;
             		validPos = true;
@@ -90,23 +101,125 @@ class board_methods
 				goodBoard = true;
 			}
 		}
-		System.out.println(bombsDetonated);
+		System.out.println("Boards Generated: " + bombsDetonated);
+		return board;
+	}
+	public static int [][] generateQuestionBoard(int [][] board)
+  {
+		int numToClear = (int) (Math.random() * 30 );
+		for(int i = 0; i < numToClear + 41; i++)
+		{
+			int xPos = (int) (Math.random() * 9 );
+			int yPos = (int) (Math.random() * 9 );
+			board[yPos][xPos] = 0;
+		}
 		return board;
   }
-  public static int [][] generateSquares(int nineNum, int [][] board)
-  {
-    
-    return board;
-  }
-  public static boolean checkPos(int nineNum, int [][] board, int xPos, int yPos)
+  public static boolean checkLinePos(int nineNum, int [][] board, int xPos, int yPos)
   {
     for(int i = 0; i < board.length; i++)
     {
       if(board[i][xPos] == nineNum && i != yPos)
       {
         return false;
+			}
+			if(board[yPos][i] == nineNum && i != xPos)
+      {
+        return false;
       }
     }
     return true;
-  }
+	}
+	public static boolean checkSquarePos(int nineNum, int [][] board, int xPos, int yPos)
+  {
+		for( int i = xPos - (xPos % 3); i < xPos - (xPos % 3) + 3; i++)
+		{
+			for( int j = yPos - (yPos % 3); j < yPos - (yPos % 3) + 3; j++)
+			{
+				if(board[j][i] == nineNum && i != xPos && j != yPos)
+				{
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	public static int [][] generateCopyBoard(int [][] boardOne, int [][] boardTwo)
+	{
+		for(int i = 0; i < boardOne.length; i++)
+		{
+			for(int j = 0; j < boardOne.length; j++)
+			{
+				boardTwo[j][i] = boardOne[j][i];
+			}
+		}
+		return boardTwo;
+	}
+}
+
+class sudoku_methods
+{
+	public static int [][] changeValuePos(int [][] board)
+	{
+		Scanner input = new Scanner(System.in);
+		boolean xPosValid = false;
+		boolean yPosValid = false;
+		boolean squareValueValid = false;
+		int xPos = 0;
+		int yPos = 0;
+		int squareValue = 0;
+		List<Integer> possibleList = new ArrayList<Integer>();
+
+		while( xPosValid == false)
+		{
+			System.out.print("What is the X-Value [0-8] of the square you want to change: ");
+			xPos = input.nextInt();
+			if( xPos >= 0 && xPos <= 8 )
+			{
+				xPosValid = true;
+			}
+			else
+			{
+				System.out.println("	Please enter in a X-Value between 0 and 8");
+			}
+		}
+		while(yPosValid == false)
+		{
+			System.out.print("What is the Y-Value [0-8] of the square you want to change: ");
+			yPos = input.nextInt();
+			if( yPos >= 0 && yPos <= 8 )
+			{
+				yPosValid = true;
+			}
+			else
+			{
+				System.out.println("	Please enter in a Y-Value between 0 and 8");
+			}
+		}
+
+		possibleList.add(0);
+		for(int i = 1; i < board.length; i++)
+		{
+			if( board_methods.checkLinePos(i, board, xPos, yPos) == true && board_methods.checkSquarePos(i, board, xPos, yPos))
+			{
+				possibleList.add(i);
+			}
+		}
+
+		while(squareValueValid == false)
+		{
+			System.out.println("What is the value you want to change the square to.");
+			System.out.print("Here are the valid values[");
+			for (Integer num : possibleList)
+			{
+				System.out.print(" " + num );
+			}
+			System.out.print("]: ");
+			squareValue = input.nextInt();
+			squareValueValid = true;
+		}
+		
+		board[yPos][xPos] = squareValue;
+		return board;
+	}
 }

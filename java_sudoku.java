@@ -5,7 +5,7 @@ import java.util.*;
 public class java_sudoku
 {
 	private static int [][] answerBoard = new int [9][9];
-	private static int [][] questionBoard = new int [9][9];
+	private static String [][] questionBoard = new String [9][9];
 	private static int emptySpaces;
 
   public static void main(String[] args)
@@ -32,7 +32,7 @@ public class java_sudoku
 
 			System.out.println("Here's a board!");    
 			board_methods.generateAnswerBoard(answerBoard);
-			board_methods.generateCopyBoard(answerBoard, questionBoard);	//copies contents of answerBoard to questionBoard
+			board_methods.generateStringCopyBoard(answerBoard, questionBoard);	//copies contents of answerBoard to questionBoard
 			board_methods.generateQuestionBoard(questionBoard, emptySpaces);
 			boolean hasWon = false;
 			while(hasWon == false)
@@ -94,6 +94,28 @@ class board_methods
       }
 		}
 		System.out.println();
+	}
+	public static void boardPrint(String [][] board)
+  {
+    System.out.println("\n  012 345 678");
+    for(int i = 0; i < board.length; i++) //increments i in the y-direction
+    {
+			System.out.print(i);
+			for(int j = 0; j < board[0].length; j++)  //increments j in the x-direction
+      {
+				if(j % 3 == 0)
+        {
+          System.out.print("|");
+        }
+        System.out.print(board[j][i]);
+      }
+      System.out.print("|\n");
+      if(i % 3 == 2 && i != board.length-1)
+      {
+        System.out.print(" -------------\n");
+      }
+		}
+		System.out.println();
   }
   public static int [][] boardZero(int [][] board)
   {
@@ -149,13 +171,13 @@ class board_methods
 		System.out.println("Boards Generated: " + bombsDetonated);
 		return board;
 	}
-	public static int [][] generateQuestionBoard(int [][] board, int numToClear)
+	public static String [][] generateQuestionBoard(String [][] board, int numToClear)
   {
 		for(int i = 0; i < numToClear; i++)
 		{
 			int xPos = (int) (Math.random() * 9 );
 			int yPos = (int) (Math.random() * 9 );
-			board[yPos][xPos] = 0;
+			board[yPos][xPos] = " ";
 		}
 		return board;
   }
@@ -168,6 +190,21 @@ class board_methods
         return false;
 			}
 			if(board[yPos][i] == nineNum && i != xPos)
+      {
+        return false;
+      }
+    }
+    return true;
+	}
+	public static boolean checkLinePos(int nineNum, String [][] board, int xPos, int yPos)
+  {
+    for(int i = 0; i < board.length; i++)
+    {
+      if(board[i][xPos] == Integer.toString(nineNum) && i != yPos)
+      {
+        return false;
+			}
+			if(board[yPos][i] == Integer.toString(nineNum) && i != xPos)
       {
         return false;
       }
@@ -188,13 +225,27 @@ class board_methods
 		}
 		return true;
 	}
-	public static int [][] generateCopyBoard(int [][] boardOne, int [][] boardTwo)
+	public static boolean checkSquarePos(int nineNum, String [][] board, int xPos, int yPos)
+  {
+		for( int i = xPos - (xPos % 3); i < xPos - (xPos % 3) + 3; i++)
+		{
+			for( int j = yPos - (yPos % 3); j < yPos - (yPos % 3) + 3; j++)
+			{
+				if(board[j][i] == Integer.toString(nineNum) && i != xPos && j != yPos)
+				{
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	public static String [][] generateStringCopyBoard(int [][] boardOne, String [][] boardTwo)
 	{
 		for(int i = 0; i < boardOne.length; i++)
 		{
 			for(int j = 0; j < boardOne.length; j++)
 			{
-				boardTwo[j][i] = boardOne[j][i];
+				boardTwo[j][i] = String.valueOf(boardOne[j][i]);
 			}
 		}
 		return boardTwo;
@@ -203,7 +254,7 @@ class board_methods
 
 class sudoku_methods
 {
-	public static int [][] changeValuePos(int [][] board)
+	public static String [][] changeValuePos(String [][] board)
 	{
 		Scanner input = new Scanner(System.in);
 		boolean xPosValid = false;
@@ -263,16 +314,16 @@ class sudoku_methods
 			squareValueValid = true;
 		}
 		
-		board[xPos][yPos] = squareValue;
+		board[xPos][yPos] = Integer.toString(squareValue);
 		return board;
 	}
-	public static boolean checkHasWon(int [][] board)
+	public static boolean checkHasWon(String [][] board)
 	{
 		for(int i = 0; i < board.length; i++)	//increments in y
 		{
 			for(int j = 0; j < board[0].length; j++)	//increments in x
 			{
-				if(board[j][i] == 0)
+				if(board[j][i] == Integer.toString(0))
 				{
 					return false;
 				}

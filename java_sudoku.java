@@ -42,7 +42,7 @@ public class java_sudoku
 				if(sudoku_methods.checkHasWon(questionBoard) == true)
 				{
 					hasWon = true;
-					System.out.println("You got Sudoku!\nHere's the CPU's solution:");
+					System.out.println("\nYou got Sudoku!\nHere's the CPU's solution:");
 					board_methods.boardPrint(answerBoard);
 				}
 			}
@@ -200,11 +200,11 @@ class board_methods
   {
     for(int i = 0; i < board.length; i++)
     {
-      if(board[i][xPos] == Integer.toString(nineNum) && i != yPos)
+      if(board[i][xPos].equals(Integer.toString(nineNum)) && i != yPos)
       {
         return false;
 			}
-			if(board[yPos][i] == Integer.toString(nineNum) && i != xPos)
+			if(board[yPos][i].equals(Integer.toString(nineNum)) && i != xPos)
       {
         return false;
       }
@@ -231,7 +231,7 @@ class board_methods
 		{
 			for( int j = yPos - (yPos % 3); j < yPos - (yPos % 3) + 3; j++)
 			{
-				if(board[j][i] == Integer.toString(nineNum) && i != xPos && j != yPos)
+				if(board[j][i].equals(Integer.toString(nineNum)) && i != xPos && j != yPos)
 				{
 					return false;
 				}

@@ -317,13 +317,64 @@ class sudoku_methods
 		board[xPos][yPos] = Integer.toString(squareValue);
 		return board;
 	}
+	public static boolean checkSquareSum(String [][] board, int xPos, int yPos)
+  {
+		int sumOfNumsInSquare = 0;
+		for( int i = xPos - (xPos % 3); i < xPos - (xPos % 3) + 3; i++)
+		{
+			for( int j = yPos - (yPos % 3); j < yPos - (yPos % 3) + 3; j++)
+			{
+				sumOfNumsInSquare = sumOfNumsInSquare + Integer.parseInt(board[j][i]);
+			}
+		}
+		if(sumOfNumsInSquare == 45)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	public static boolean checkColSum(String [][] board, int xPos)
+  {
+		int sumOfNumsInCol = 0;
+		for( int i = 0; i < board.length; i++)
+		{
+			sumOfNumsInCol += Integer.parseInt(board[i][xPos]);
+		}
+		if(sumOfNumsInCol == 45)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	public static boolean checkRowSum(String [][] board, int yPos)
+  {
+		int sumOfNumsInRow = 0;
+		for( int i = 0; i < board.length; i++)
+		{
+			sumOfNumsInRow += Integer.parseInt(board[yPos][i]);
+		}
+		if(sumOfNumsInRow == 45)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
 	public static boolean checkHasWon(String [][] board)
 	{
 		for(int i = 0; i < board.length; i++)	//increments in y
 		{
 			for(int j = 0; j < board[0].length; j++)	//increments in x
 			{
-				if(board[j][i] == Integer.toString(0))
+				if(board[j][i] == Integer.toString(0) || checkSquareSum(board, i, j) == false || checkColSum(board, j) == false || checkRowSum(board, i) == false)
 				{
 					return false;
 				}

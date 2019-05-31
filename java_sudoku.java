@@ -76,19 +76,20 @@ class board_methods
 {
   public static void boardPrint(int [][] board)
   {
-    System.out.println();
-    for(int i = 0; i < board.length; i++) //increments i in the y-direction
+    System.out.println("\n  012 345 678");
+    for(int yPos = 0; yPos < board.length; yPos++) //increments i in the y-direction
     {
-      for(int j = 0; j < board[0].length; j++)  //increments j in the x-direction
+			System.out.print(yPos);
+			for(int xPos = 0; xPos < board[0].length; xPos++)  //increments j in the x-direction
       {
-        if(j % 3 == 0)
+        if(xPos % 3 == 0)
         {
           System.out.print("|");
         }
-        System.out.print(board[j][i]);
+        System.out.print(board[yPos][xPos]);
       }
       System.out.print("|\n");
-      if(i % 3 == 2 && i != board.length-1)
+      if(yPos % 3 == 2 && yPos != board.length-1)
       {
         System.out.print("-------------\n");
       }
@@ -98,21 +99,21 @@ class board_methods
 	public static void boardPrint(String [][] board)
   {
     System.out.println("\n  012 345 678");
-    for(int i = 0; i < board.length; i++) //increments i in the y-direction
+    for(int yPos = 0; yPos < board.length; yPos++) //increments i in the y-direction
     {
-			System.out.print(i);
-			for(int j = 0; j < board[0].length; j++)  //increments j in the x-direction
+			System.out.print(yPos);
+			for(int xPos = 0; xPos < board[0].length; xPos++)  //increments j in the x-direction
       {
-				if(j % 3 == 0)
+        if(xPos % 3 == 0)
         {
           System.out.print("|");
         }
-        System.out.print(board[j][i]);
+        System.out.print(board[yPos][xPos]);
       }
       System.out.print("|\n");
-      if(i % 3 == 2 && i != board.length-1)
+      if(yPos % 3 == 2 && yPos != board.length-1)
       {
-        System.out.print(" -------------\n");
+        System.out.print("-------------\n");
       }
 		}
 		System.out.println();
@@ -292,7 +293,7 @@ class sudoku_methods
 		}
 
 		System.out.print("What is the value you want to change the square to: ");
-		board[xPos][yPos] = input.next();
+		board[yPos][xPos] = input.next();
 		return board;
 	}
 	public static boolean checkSquareSum(String [][] board, int xPos, int yPos)

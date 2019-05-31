@@ -58,7 +58,7 @@ public class java_sudoku
 					validYN = true;
 					wantsToPlay = true;
 				}
-				if(yesNo.equals("no") || yesNo.equals("No"))
+				else if(yesNo.equals("no") || yesNo.equals("No"))
 				{
 					validYN = true;
 					wantsToPlay = false;
@@ -263,7 +263,6 @@ class sudoku_methods
 		int xPos = 0;
 		int yPos = 0;
 		int squareValue = 0;
-		List<Integer> possibleList = new ArrayList<Integer>();
 
 		while( xPosValid == false)
 		{
@@ -292,29 +291,8 @@ class sudoku_methods
 			}
 		}
 
-		possibleList.add(0);
-		for(int i = 1; i < board.length; i++)
-		{
-			if( board_methods.checkLinePos(i, board, yPos, xPos) == true && board_methods.checkSquarePos(i, board, yPos, xPos))
-			{
-				possibleList.add(i);
-			}
-		}
-
-		while(squareValueValid == false)
-		{
-			System.out.println("What is the value you want to change the square to.");
-			System.out.print("Here are the valid values[");
-			for (Integer num : possibleList)
-			{
-				System.out.print(" " + num );
-			}
-			System.out.print("]: ");
-			squareValue = input.nextInt();
-			squareValueValid = true;
-		}
-		
-		board[xPos][yPos] = Integer.toString(squareValue);
+		System.out.print("What is the value you want to change the square to: ");
+		board[xPos][yPos] = input.next();
 		return board;
 	}
 	public static boolean checkSquareSum(String [][] board, int xPos, int yPos)
@@ -324,7 +302,10 @@ class sudoku_methods
 		{
 			for( int j = yPos - (yPos % 3); j < yPos - (yPos % 3) + 3; j++)
 			{
-				sumOfNumsInSquare = sumOfNumsInSquare + Integer.parseInt(board[j][i]);
+				if(board[j][i].equals(" ") != true)
+				{
+					sumOfNumsInSquare = sumOfNumsInSquare + Integer.parseInt(board[j][i]);
+				}
 			}
 		}
 		if(sumOfNumsInSquare == 45)
@@ -341,7 +322,10 @@ class sudoku_methods
 		int sumOfNumsInCol = 0;
 		for( int i = 0; i < board.length; i++)
 		{
-			sumOfNumsInCol += Integer.parseInt(board[i][xPos]);
+			if(board[i][xPos].equals(" ") != true)
+			{
+				sumOfNumsInCol += Integer.parseInt(board[i][xPos]);
+			}			
 		}
 		if(sumOfNumsInCol == 45)
 		{
@@ -352,12 +336,22 @@ class sudoku_methods
 			return false;
 		}
 	}
+	public static List<Integer> findPossibleList(String [][] board, int yPos, int xPos)
+	{
+		List<Integer> possibleList = new ArrayList<Integer>();
+		possibleList.add(0);
+
+		return possibleList;
+	}
 	public static boolean checkRowSum(String [][] board, int yPos)
   {
 		int sumOfNumsInRow = 0;
 		for( int i = 0; i < board.length; i++)
 		{
-			sumOfNumsInRow += Integer.parseInt(board[yPos][i]);
+			if(board[yPos][i].equals(" ") != true)
+			{
+				sumOfNumsInRow += Integer.parseInt(board[yPos][i]);
+			}			
 		}
 		if(sumOfNumsInRow == 45)
 		{
@@ -370,17 +364,18 @@ class sudoku_methods
 	}
 	public static boolean checkHasWon(String [][] board)
 	{
-		for(int i = 0; i < board.length; i++)	//increments in y
+		for(int yPos = 0; yPos < board.length; yPos++)	//increments in y
 		{
-			for(int j = 0; j < board[0].length; j++)	//increments in x
+			for(int xPos = 0; xPos < board[0].length; xPos++)	//increments in x
 			{
-				if(board[j][i] == Integer.toString(0) || checkSquareSum(board, i, j) == false || checkColSum(board, j) == false || checkRowSum(board, i) == false)
+				if(board[yPos][xPos] == Integer.toString(0) || checkSquareSum(board, xPos, yPos) == false || checkColSum(board, xPos) == false || checkRowSum(board, yPos) == false)
 				{
+					System.out.println("Test Failure at " + xPos + ", " + yPos + ": value is " + board[yPos][xPos]);
+					System.out.println("	checkSquareSum: " + checkSquareSum(board, xPos, yPos));
 					return false;
 				}
 			}
 		}
 		return true;
 	}
-	
 }
